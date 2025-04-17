@@ -1,64 +1,71 @@
 // src/features/auth/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../api/axios"; // Gunakan axios instance custom
 
-// Base URL
-axios.defaults.withCredentials = true;
-const API_URL = "http://localhost:5000/api"; // Ganti sesuai backend kamu
-
-// Register user
+// Async Thunks menggunakan axiosInstance
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`${API_URL}/auth/register`, userData);
-      return res.data.data;
-    } catch (err) {
-      return rejectWithValue(err.response.data.message);
-    }
-  }
-);
-
-// Login user
-export const loginUser = createAsyncThunk(
-  "auth/login",
-  async (credentials, { rejectWithValue }) => {
-    try {
-      const res = await axios.post(`${API_URL}/auth/login`, credentials);
-      return res.data.data;
-    } catch (err) {
-      return rejectWithValue(err.response.data.message);
-    }
-  }
-);
-
-// Logout user
-export const logoutUser = createAsyncThunk("auth/logout", async () => {
-  await axios.post(`${API_URL}/auth/logout`);
-});
-export const fetchProfile = createAsyncThunk(
-  "auth/profile",
-  async (_, { rejectWithValue }) => {
-    try {
-      const res = await axios.get(`${API_URL}/profile`);
-      return res.data.data; // karena backend kirim di `data`
-    } catch (err) {
+      const response = await axiosInstance.post("/auth/register", userData);
+      return response.data;
+    } catch (error) {
       return rejectWithValue(
-        err.response?.data?.message || "Failed to fetch profile"
+        error.response?.data || { message: "Registration failed" }
       );
     }
   }
 );
 
+export const loginUser = createAsyncThunk(
+  "auth/login",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post("/auth/login", userData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Login failed" }
+      );
+    }
+  }
+);
+
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post("/auth/logout");
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Logout failed" }
+      );
+    }
+  }
+);
+
+// Slice
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: null,
-    loading: false,
+    token: null,
+    status: "idle",
     error: null,
+    isAuthenticated: false,
   },
   reducers: {
-    resetError: (state) => {
+    // Sync reducers untuk inisialisasi state dari localStorage
+    initializeAuth(state) {
+      const token = localStorage.getItem("token");
+
+      if (token) {
+        state.token = token;
+        state.isAuthenticated = true;
+      }
+    },
+    // Clear error message
+    clearError(state) {
       state.error = null;
     },
   },
@@ -66,50 +73,53 @@ const authSlice = createSlice({
     builder
       // Register
       .addCase(registerUser.pending, (state) => {
-        state.loading = true;
+        state.status = "loading";
+        state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
+        state.status = "succeeded";
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+        localStorage.setItem("token", action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.status = "failed";
+        state.error = action.payload?.message || "Registration failed";
       })
 
       // Login
       .addCase(loginUser.pending, (state) => {
-        state.loading = true;
+        state.status = "loading";
+        state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
+        state.status = "succeeded";
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+        localStorage.setItem("token", action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.status = "failed";
+        state.error = action.payload?.message || "Login failed";
       })
 
       // Logout
+      .addCase(logoutUser.pending, (state) => {
+        state.status = "loading";
+      })
       .addCase(logoutUser.fulfilled, (state) => {
-        state.user = null;
+        state.status = "idle";
+        state.token = null;
+        state.isAuthenticated = false;
+        state.error = null;
+        localStorage.removeItem("token");
       })
-
-      // Profile
-      .addCase(fetchProfile.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchProfile.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload; // langsung simpan profil lengkap ke state.user
-      })
-      .addCase(fetchProfile.rejected, (state, action) => {
-        state.loading = false;
-        state.user = null;
-        state.error = action.payload;
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload?.message || "Logout failed";
       });
   },
 });
 
-export const { resetError } = authSlice.actions;
+export const { initializeAuth, clearError } = authSlice.actions;
 export default authSlice.reducer;
