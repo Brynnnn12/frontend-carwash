@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { clearError, registerUser } from "../../app/features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 
 const RegisterModal = ({ onSwitchToLogin }) => {
   const [formData, setFormData] = useState({
@@ -18,13 +17,8 @@ const RegisterModal = ({ onSwitchToLogin }) => {
   useEffect(() => {
     dispatch(clearError());
     if (status === "succeeded" && isAuthenticated) {
-      toast.success("Register berhasil!");
       document.getElementById("register_modal").close();
       navigate("/");
-    }
-
-    if (status === "failed" && error) {
-      toast.error(error);
     }
   }, [dispatch, navigate, isAuthenticated, status, error]);
 

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { clearError, loginUser } from "../../app/features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { fetchProfile } from "../../app/features/profileSlice";
 
 const LoginModal = ({ onSwitchToRegister }) => {
   const [formData, setFormData] = useState({
@@ -17,13 +17,8 @@ const LoginModal = ({ onSwitchToRegister }) => {
   useEffect(() => {
     dispatch(clearError());
     if (status === "succeeded" && isAuthenticated) {
-      toast.success("Login berhasil!");
       document.getElementById("login_modal").close();
       navigate("/");
-    }
-
-    if (status === "failed" && error) {
-      toast.error(error);
     }
   }, [dispatch, navigate, isAuthenticated, status, error]);
 
@@ -34,9 +29,12 @@ const LoginModal = ({ onSwitchToRegister }) => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(loginUser(formData));
+    const result = await dispatch(loginUser(formData));
+    if (loginUser.fulfilled.match(result)) {
+      dispatch(fetchProfile());
+    }
   };
 
   return (

@@ -1,61 +1,28 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clearError,
+  fetchTestimonials,
+} from "../../app/features/testimonialSlice";
 
 const TestimonialPage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [itemsPerSlide, setItemsPerSlide] = useState(1);
   const intervalRef = useRef(null);
 
-  const testimonials = [
-    {
-      id: 1,
-      name: "Budi Santoso",
-      rating: 5,
-      content:
-        "Cucian mobilnya sangat bersih dan mengkilap! Pelayanannya cepat dan ramah.",
-      image: "/api/placeholder/56/56",
-    },
-    {
-      id: 2,
-      name: "Ani Wijaya",
-      rating: 4,
-      content:
-        "Saya sangat puas dengan paket cuci interior. Jok mobil sekarang bersih dan wangi.",
-      image: "/api/placeholder/56/56",
-    },
-    {
-      id: 3,
-      name: "Rudi Hartono",
-      rating: 5,
-      content:
-        "Layanan premium mereka worth it banget! Detailingnya sangat teliti.",
-      image: "/api/placeholder/56/56",
-    },
-    {
-      id: 4,
-      name: "Siti Nurhaliza",
-      rating: 5,
-      content:
-        "Paket reguler pun hasilnya memuaskan. Mobil saya selalu bersih maksimal.",
-      image: "/api/placeholder/56/56",
-    },
-    {
-      id: 5,
-      name: "Agus Setiawan",
-      rating: 4,
-      content:
-        "Sebagai driver online, saya rutin cuci disini. Cepat, bersih, dan wangi.",
-      image: "/api/placeholder/56/56",
-    },
-    {
-      id: 6,
-      name: "Dewi Lestari",
-      rating: 5,
-      content:
-        "Pelayanan sangat profesional! Hasil detailingnya melebihi ekspektasi saya.",
-      image: "/api/placeholder/56/56",
-    },
-  ];
+  const dispatch = useDispatch();
+  const { testimonials, loading, error } = useSelector(
+    (state) => state.testimonials
+  );
+
+  useEffect(() => {
+    dispatch(fetchTestimonials({ page: 1, limit: 10 }));
+
+    return () => {
+      dispatch(clearError());
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -77,7 +44,7 @@ const TestimonialPage = () => {
 
   // Group testimonials based on itemsPerSlide
   const groupedTestimonials = [];
-  for (let i = 0; i < testimonials.length; i += itemsPerSlide) {
+  for (let i = 0; i < testimonials?.length; i += itemsPerSlide) {
     groupedTestimonials.push(testimonials.slice(i, i + itemsPerSlide));
   }
 
@@ -85,14 +52,16 @@ const TestimonialPage = () => {
 
   useEffect(() => {
     // Reset slide if current slide is out of bounds after resizing
-    if (currentSlide >= totalSlides) {
+    if (currentSlide >= totalSlides && totalSlides > 0) {
       setCurrentSlide(0);
     }
 
-    // Set up auto-rotation interval
-    intervalRef.current = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % totalSlides);
-    }, 8000);
+    // Set up auto-rotation interval only if there are testimonials
+    if (totalSlides > 0) {
+      intervalRef.current = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % totalSlides);
+      }, 8000);
+    }
 
     return () => clearInterval(intervalRef.current);
   }, [totalSlides, currentSlide]);
@@ -130,24 +99,24 @@ const TestimonialPage = () => {
   // Render testimonial card component
   const TestimonialCard = ({ testimonial }) => (
     <motion.div
-      key={testimonial.id}
+      key={testimonial._id}
       className="bg-white rounded-3xl shadow-lg p-6 transition hover:shadow-xl"
     >
       <div className="flex items-center gap-4 mb-4">
         <img
-          src={testimonial.image}
-          alt={testimonial.name}
+          src={testimonial.user?.profile?.avatar || "/default-avatar.png"}
+          alt={testimonial.user?.username}
           className="w-14 h-14 rounded-full object-cover"
         />
         <div>
           <h3 className="text-md font-semibold text-neutral-900">
-            {testimonial.name}
+            {testimonial.user?.username}
           </h3>
           <StarRating rating={testimonial.rating} />
         </div>
       </div>
       <p className="text-sm text-neutral-700 leading-relaxed">
-        "{testimonial.content}"
+        "{testimonial.comment}"
       </p>
     </motion.div>
   );
@@ -155,9 +124,9 @@ const TestimonialPage = () => {
   // Navigation dots for slides
   const SlideIndicators = () => (
     <div className="flex justify-center gap-4 mt-8">
-      {[...Array(totalSlides)].map((_, i) => (
+      {Array.from({ length: totalSlides }).map((_, i) => (
         <button
-          key={i}
+          key={`indicator-${i}`}
           onClick={() => {
             setCurrentSlide(i);
             clearInterval(intervalRef.current);
@@ -173,6 +142,39 @@ const TestimonialPage = () => {
       ))}
     </div>
   );
+
+  if (loading) {
+    return (
+      <div className="bg-gradient-to-br from-neutral-100 to-neutral-200 py-16 px-6">
+        <div className="max-w-4xl mx-auto text-center mb-12">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-primary mb-3">
+            Testimoni Pelanggan
+          </h1>
+          <p className="text-base md:text-lg text-secondary">
+            Memuat testimoni...
+          </p>
+        </div>
+        <div className="flex justify-center">
+          <div className="animate-pulse bg-white rounded-3xl shadow-lg p-6 w-full max-w-md h-64" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-gradient-to-br from-neutral-100 to-neutral-200 py-16 px-6">
+        <div className="max-w-4xl mx-auto text-center mb-12">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-primary mb-3">
+            Testimoni Pelanggan
+          </h1>
+          <p className="text-base md:text-lg text-red-500">
+            {error.message || "Gagal memuat testimoni"}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -193,22 +195,33 @@ const TestimonialPage = () => {
         </p>
       </motion.div>
 
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentSlide}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-          variants={fadeIn}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-2 md:px-4"
-        >
-          {groupedTestimonials[currentSlide]?.map((testimonial) => (
-            <TestimonialCard key={testimonial.id} testimonial={testimonial} />
-          ))}
-        </motion.div>
-      </AnimatePresence>
+      {testimonials?.length > 0 ? (
+        <>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`slide-${currentSlide}`}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={fadeIn}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto px-2 md:px-4"
+            >
+              {groupedTestimonials[currentSlide]?.map((testimonial, index) => (
+                <TestimonialCard
+                  key={`card-${testimonial._id || index}`}
+                  testimonial={testimonial}
+                />
+              ))}
+            </motion.div>
+          </AnimatePresence>
 
-      <SlideIndicators />
+          {totalSlides > 1 && <SlideIndicators />}
+        </>
+      ) : (
+        <div className="text-center py-8">
+          <p className="text-neutral-500">Belum ada testimoni yang tersedia</p>
+        </div>
+      )}
 
       <div className="mt-10 flex justify-center">
         <a

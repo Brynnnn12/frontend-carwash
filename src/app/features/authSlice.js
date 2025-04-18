@@ -1,6 +1,7 @@
 // src/features/auth/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axios"; // Gunakan axios instance custom
+import toast from "react-hot-toast";
 
 // Async Thunks menggunakan axiosInstance
 export const registerUser = createAsyncThunk(
@@ -8,8 +9,10 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/auth/register", userData);
+      toast.success("Registrasi berhasil");
       return response.data;
     } catch (error) {
+      toast.error(error.response.data.message);
       return rejectWithValue(
         error.response?.data || { message: "Registration failed" }
       );
@@ -22,8 +25,10 @@ export const loginUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/auth/login", userData);
+      toast.success("Login berhasil");
       return response.data;
     } catch (error) {
+      toast.error(error.response.data.message);
       return rejectWithValue(
         error.response?.data || { message: "Login failed" }
       );
@@ -36,8 +41,10 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/auth/logout");
+      toast.success("Logout berhasil");
       return response.data;
     } catch (error) {
+      toast.error(error.response.data.message);
       return rejectWithValue(
         error.response?.data || { message: "Logout failed" }
       );

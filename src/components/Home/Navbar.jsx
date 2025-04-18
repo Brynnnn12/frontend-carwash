@@ -4,6 +4,7 @@ import RegisterModal from "../Daisyui/RegisterModal";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../app/features/authSlice"; // Add logout action
 import { Link } from "react-router-dom";
+import { clearProfile } from "../../app/features/profileSlice";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -43,6 +44,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser()); // Call logout action
+    dispatch(clearProfile());
     setIsAvatarDropdownOpen(false);
   };
 

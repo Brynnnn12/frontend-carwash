@@ -1,7 +1,10 @@
 import { FaBell, FaUserCircle, FaSearch } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
+import { useSelector } from "react-redux";
 
 const Header = ({ sidebarOpen, setSidebarOpen }) => {
+  const profile = useSelector((state) => state.profile.data);
+
   return (
     <header className="bg-white shadow-sm z-10">
       <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -36,11 +39,20 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
           <div className="ml-3 relative">
             <div className="flex items-center space-x-2">
               <div className="text-right hidden md:block">
-                <p className="text-sm font-medium text-gray-700">Admin User</p>
-                <p className="text-xs text-gray-500">Admin</p>
+                <p className="text-sm font-medium text-gray-700">
+                  {profile.user.username || "Guest"}
+                </p>
+                <p className="text-xs text-gray-500">
+                  {profile.user.role.name}
+                </p>
               </div>
               <button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <FaUserCircle className="h-8 w-8 text-gray-400" />
+                {/* <FaUserCircle className="h-8 w-8 text-gray-400" /> */}
+                <img
+                  className="h-8 w-8 rounded-full"
+                  src="{profile.avatar}"
+                  alt=""
+                />
               </button>
             </div>
           </div>
