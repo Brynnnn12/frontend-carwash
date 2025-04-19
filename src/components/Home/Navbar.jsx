@@ -22,7 +22,10 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => {
+    setIsMenuOpen((prev) => !prev);
+    setIsAvatarDropdownOpen(false);
+  };
 
   const scrollToSection = (id) => {
     const section = document.getElementById(id);
@@ -110,7 +113,10 @@ const Navbar = () => {
               {/* Avatar dropdown */}
               <div className="relative">
                 <button
-                  onClick={() => setIsAvatarDropdownOpen(!isAvatarDropdownOpen)}
+                  onClick={() => {
+                    setIsAvatarDropdownOpen((prev) => !prev);
+                    setIsMenuOpen(false);
+                  }}
                   className="btn btn-ghost text-white hover:text-yellow-300"
                 >
                   <div className="avatar w-10 h-10 rounded-full">
@@ -208,26 +214,28 @@ const Navbar = () => {
               >
                 Testimonial
               </button>
-              <div className="flex flex-col gap-2 mt-4">
-                <button
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    document.getElementById("login_modal").showModal();
-                  }}
-                  className="btn btn-ghost border-white text-white hover:bg-blue-700 w-full"
-                >
-                  Login
-                </button>
-                <button
-                  onClick={() => {
-                    setIsMenuOpen(false);
-                    document.getElementById("register_modal").showModal();
-                  }}
-                  className="btn bg-yellow-400 hover:bg-yellow-500 text-blue-800 border-none w-full"
-                >
-                  Register
-                </button>
-              </div>
+              {isAuthenticated ? null : (
+                <div className="flex flex-col gap-2 mt-4">
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      document.getElementById("login_modal").showModal();
+                    }}
+                    className="btn btn-ghost border-white text-white hover:bg-blue-700 w-full"
+                  >
+                    Login
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsMenuOpen(false);
+                      document.getElementById("register_modal").showModal();
+                    }}
+                    className="btn bg-yellow-400 hover:bg-yellow-500 text-blue-800 border-none w-full"
+                  >
+                    Register
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -1,9 +1,12 @@
-import { FaBell, FaUserCircle, FaSearch } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 import { FiMenu } from "react-icons/fi";
 import { useSelector } from "react-redux";
 
 const Header = ({ sidebarOpen, setSidebarOpen }) => {
   const profile = useSelector((state) => state.profile.data);
+
+  const username = profile?.user?.username || "Guest";
+  const avatar = profile?.avatar;
 
   return (
     <header className="bg-white shadow-sm z-10">
@@ -16,45 +19,29 @@ const Header = ({ sidebarOpen, setSidebarOpen }) => {
           <FiMenu className="h-6 w-6" />
         </button>
 
-        {/* Search Bar */}
-        <div className="flex-1 max-w-xs ml-4 lg:ml-0">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FaSearch className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search..."
-              className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            />
+        {/* Welcome Text */}
+        <div className="ml-4">
+          <div className="text-sm sm:text-base font-semibold text-primary">
+            <span className="badge badge-primary badge-outline px-4 py-2 shadow-sm">
+              Selamat datang, {username}
+            </span>
           </div>
         </div>
 
         {/* Right Side */}
-        <div className="flex items-center">
-          <button className="p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <FaBell className="h-6 w-6" />
-          </button>
-
+        <div className="flex items-center ml-auto">
           <div className="ml-3 relative">
-            <div className="flex items-center space-x-2">
-              <div className="text-right hidden md:block">
-                <p className="text-sm font-medium text-gray-700">
-                  {profile.user.username || "Guest"}
-                </p>
-                <p className="text-xs text-gray-500">
-                  {profile.user.role.name}
-                </p>
-              </div>
-              <button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
-                {/* <FaUserCircle className="h-8 w-8 text-gray-400" /> */}
+            <button className="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+              {avatar ? (
                 <img
                   className="h-8 w-8 rounded-full"
-                  src="{profile.avatar}"
-                  alt=""
+                  src={avatar}
+                  alt="Avatar"
                 />
-              </button>
-            </div>
+              ) : (
+                <FaUserCircle className="h-8 w-8 text-gray-400" />
+              )}
+            </button>
           </div>
         </div>
       </div>

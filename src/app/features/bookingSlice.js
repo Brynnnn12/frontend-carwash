@@ -1,6 +1,7 @@
 // src/features/booking/bookingSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axios";
+import toast from "react-hot-toast";
 
 // Helper function for consistent error handling
 const handleAsyncError = (error) => {
@@ -17,8 +18,10 @@ export const createBooking = createAsyncThunk(
   async (bookingData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/bookings", bookingData);
+      toast.success("Booking created successfully");
       return response.data.data;
     } catch (error) {
+      toast.error(error.response.data.message);
       return rejectWithValue(handleAsyncError(error));
     }
   }
@@ -53,8 +56,10 @@ export const updateBooking = createAsyncThunk(
   async ({ id, bookingData }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(`/bookings/${id}`, bookingData);
+      toast.success("Booking updated successfully");
       return response.data.data;
     } catch (error) {
+      toast.error(error.response.data.message);
       return rejectWithValue(handleAsyncError(error));
     }
   }
@@ -67,8 +72,10 @@ export const updateBookingStatus = createAsyncThunk(
       const response = await axiosInstance.patch(`/bookings/${id}/status`, {
         status,
       });
+      toast.success("Booking status updated successfully");
       return response.data.data;
     } catch (error) {
+      toast.error(error.response.data.message);
       return rejectWithValue(handleAsyncError(error));
     }
   }
@@ -79,8 +86,10 @@ export const deleteBooking = createAsyncThunk(
   async (bookingId, { rejectWithValue }) => {
     try {
       await axiosInstance.delete(`/bookings/${bookingId}`);
+      toast.success("Booking deleted successfully");
       return bookingId;
     } catch (error) {
+      toast.error(error.response.data.message);
       return rejectWithValue(handleAsyncError(error));
     }
   }
@@ -139,6 +148,8 @@ const bookingSlice = createSlice({
       })
 
       .addCase(updateBooking.fulfilled, (state, action) => {
+        if (!action.payload) return; // ✅ hindari crash kalau payload undefined
+
         state.status = "succeeded";
         state.bookings = state.bookings.map((booking) =>
           booking.id === action.payload.id ? action.payload : booking

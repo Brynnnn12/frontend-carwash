@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axios";
-import toast from "react-hot-toast";
 
 // Async thunk
 export const fetchProfile = createAsyncThunk(
@@ -10,7 +9,6 @@ export const fetchProfile = createAsyncThunk(
       const res = await axiosInstance.get("/profile");
       return res.data.data;
     } catch (error) {
-      toast.error("Gagal mengambil profile");
       return rejectWithValue(
         error.response?.data || { message: "Fetch failed" }
       );

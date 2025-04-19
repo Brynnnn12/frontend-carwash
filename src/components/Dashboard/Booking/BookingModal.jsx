@@ -118,7 +118,7 @@ export default function BookingModal({
                   onChange={handleChange}
                   required
                   placeholder="Contoh: B 1234 ABC"
-                  className="input input-bordered w-full"
+                  className="input bg-gray-100 text-gray-700 input-bordered w-full"
                 />
               </div>
             </div>
@@ -163,13 +163,13 @@ export default function BookingModal({
                   value={formData.bookingDate || ""}
                   onChange={handleChange}
                   required
-                  className="input input-bordered w-full"
+                  className="input bg-gray-100 text-gray-700 input-bordered w-full"
                 />
               </div>
 
               {/* Booking Time */}
               <div className="form-control">
-                <label className="label">
+                <label className="label ">
                   <span className="label-text font-medium text-gray-700">
                     Waktu Booking
                   </span>
@@ -180,7 +180,7 @@ export default function BookingModal({
                   value={formData.bookingTime || ""}
                   onChange={handleChange}
                   required
-                  className="input input-bordered w-full"
+                  className="input bg-gray-100 text-gray-700 input-bordered w-full"
                 />
               </div>
             </div>
