@@ -1,15 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axios";
 import toast from "react-hot-toast";
+import { buildQueryString } from "../../utils/queryString";
 
 // Async Thunks
 export const getServicePrices = createAsyncThunk(
   "servicePrices/getAll",
-  async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(
-        `/service-price?page=${page}&limit=${limit}`
-      );
+      const queryString = buildQueryString(params, { page: 1, limit: 10 });
+      const response = await axiosInstance.get(`/service-price${queryString}`);
       return {
         data: response.data.data,
         pagination: response.data.pagination,

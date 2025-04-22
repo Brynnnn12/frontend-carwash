@@ -25,79 +25,81 @@ export default function BookingTable({
   };
 
   return (
-    <div className="w-full">
-      <div className="overflow-x-auto">
-        <table className="table table-zebra">
-          <thead>
-            <tr className="bg-primary text-primary-content">
-              <th>No</th>
-              <th>Nama</th>
-              <th>Tanggal</th>
-              <th>Waktu</th>
-              <th>Status</th>
-              <th className="text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody className="text-black">
-            {loading ? (
-              <tr>
-                <td colSpan="6" className="text-center py-4">
-                  <span className="loading loading-spinner loading-lg"></span>
-                </td>
+    <div className="">
+      {/* Scroll container */}
+      <div className="relative">
+        <div className="overflow-x-auto overflow-y-auto">
+          <table className="table w-full min-w-[600px]">
+            <thead>
+              <tr className="bg-primary text-primary-content">
+                <th className="sticky left-0 z-10 bg-primary">No</th>
+                <th>Nama</th>
+                <th>Tanggal</th>
+                <th>Waktu</th>
+                <th>Status</th>
+                <th className="text-center">Aksi</th>
               </tr>
-            ) : !bookings || bookings.length === 0 ? (
-              <tr>
-                <td colSpan="6" className="text-center py-4">
-                  Tidak ada data booking
-                </td>
-              </tr>
-            ) : (
-              bookings.map((booking, index) => (
-                <tr key={booking.id || index}>
-                  <td>{index + 1}</td>
-                  <td>{booking.user?.username || "-"}</td>
-                  <td>{renderDate(booking.bookingDate)}</td>
-                  <td>{booking.bookingTime || "-"}</td>
-                  <td>
-                    <span
-                      className={`badge ${
-                        booking.status === "confirmed"
-                          ? "badge-success"
-                          : booking.status === "pending"
-                          ? "badge-warning"
-                          : "badge-error"
-                      }`}
-                    >
-                      {booking.status || "unknown"}
-                    </span>
-                  </td>
-                  <td className="flex justify-center gap-2">
-                    <button
-                      onClick={() => onView?.(booking)}
-                      className="btn btn-sm btn-info text-white"
-                    >
-                      <FiEye />
-                    </button>
-                    <button
-                      onClick={() => onEdit?.(booking)}
-                      className="btn btn-sm btn-warning text-white"
-                    >
-                      <FiEdit />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(booking)}
-                      className="btn btn-sm btn-error text-white"
-                    >
-                      <FiTrash2 />
-                    </button>
+            </thead>
+            <tbody className="bg-white text-black">
+              {loading ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">
+                    <span className="loading loading-spinner loading-lg"></span>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : !bookings || bookings.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center py-4">
+                    Tidak ada data booking
+                  </td>
+                </tr>
+              ) : (
+                bookings.map((booking, index) => (
+                  <tr key={booking.id || index}>
+                    <td className="sticky left-0 z-10 bg-white">{index + 1}</td>
+                    <td>{booking.user?.username || "-"}</td>
+                    <td>{renderDate(booking.bookingDate)}</td>
+                    <td>{booking.bookingTime || "-"}</td>
+                    <td>
+                      <span
+                        className={`badge ${
+                          booking.status === "confirmed"
+                            ? "badge-success"
+                            : booking.status === "pending"
+                            ? "badge-warning"
+                            : "badge-error"
+                        }`}
+                      >
+                        {booking.status || "unknown"}
+                      </span>
+                    </td>
+                    <td className="flex justify-center gap-2 flex-wrap">
+                      <button
+                        onClick={() => onView?.(booking)}
+                        className="btn btn-sm btn-info text-white"
+                      >
+                        <FiEye />
+                      </button>
+                      <button
+                        onClick={() => onEdit?.(booking)}
+                        className="btn btn-sm btn-warning text-white"
+                      >
+                        <FiEdit />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteClick(booking)}
+                        className="btn btn-sm btn-error text-white"
+                      >
+                        <FiTrash2 />
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
-
       {/* Delete Confirmation Modal */}
       <dialog id="delete_modal" className="modal">
         <div className="modal-box">

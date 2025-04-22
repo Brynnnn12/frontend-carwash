@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { logoutUser } from "../../app/features/authSlice"; // Add logout action
 import { Link } from "react-router-dom";
 import { clearProfile } from "../../app/features/profileSlice";
+import { FaUserCircle } from "react-icons/fa";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,6 +13,7 @@ const Navbar = () => {
   const [isAvatarDropdownOpen, setIsAvatarDropdownOpen] = useState(false); // State for avatar dropdown
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state) => state.auth); // Fetch user and authentication state
+  const profile = useSelector((state) => state.profile.data);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -117,10 +119,18 @@ const Navbar = () => {
                     setIsAvatarDropdownOpen((prev) => !prev);
                     setIsMenuOpen(false);
                   }}
-                  className="btn btn-ghost text-white hover:text-yellow-300"
+                  className="  hover:text-yellow-300"
                 >
-                  <div className="avatar w-10 h-10 rounded-full">
-                    <img src="https://i.pravatar.cc/150?img=3" alt="avatar" />
+                  <div className="w-10 h-10 rounded-full overflow-hidden  flex items-center justify-center">
+                    {profile?.avatar ? (
+                      <img
+                        src={profile.avatar}
+                        alt={profile.name || "User"}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <FaUserCircle className="text-4xl text-white" />
+                    )}
                   </div>
                 </button>
                 {isAvatarDropdownOpen && (

@@ -5,6 +5,7 @@ import servicePriceReducer from "./features/servicePrice";
 import serviceReducer from "./features/serviceSlice";
 import testimonialReducer from "./features/testimonialSlice";
 import profileReducer from "./features/profileSlice";
+import transactionsReducer from "./features/transactionSlice";
 
 export default configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export default configureStore({
     services: serviceReducer,
     testimonials: testimonialReducer,
     profile: profileReducer,
+    transaction: transactionsReducer,
   },
 });

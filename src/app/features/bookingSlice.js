@@ -18,7 +18,7 @@ export const createBooking = createAsyncThunk(
   async (bookingData, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/bookings", bookingData);
-      toast.success("Booking created successfully");
+      toast.success("Booking & Transaksi berhasil dibuat");
       return response.data.data;
     } catch (error) {
       toast.error(error.response.data.message);
@@ -158,6 +158,8 @@ const bookingSlice = createSlice({
       })
 
       .addCase(updateBookingStatus.fulfilled, (state, action) => {
+        if (!action.payload) return; // ✅ Tambahkan ini untuk menghindari crash
+
         state.status = "succeeded";
         state.bookings = state.bookings.map((booking) =>
           booking.id === action.payload.id ? action.payload : booking

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FiX } from "react-icons/fi";
 
 export default function BookingModal({
@@ -13,11 +13,19 @@ export default function BookingModal({
   servicePrices = [],
   profile,
 }) {
+  const [selectedService, setSelectedService] = useState("");
+
   useEffect(() => {
     const modal = document.getElementById("booking_modal");
     if (open) modal?.showModal();
     else modal?.close();
   }, [open]);
+
+  useEffect(() => {
+    if (open && !isEditMode) {
+      setSelectedService("");
+    }
+  }, [open, isEditMode]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,6 +38,16 @@ export default function BookingModal({
       currency: "IDR",
       minimumFractionDigits: 0,
     }).format(price);
+
+  // Ambil layanan unik
+  const uniqueServices = [
+    ...new Map(
+      servicePrices.map((sp) => [
+        `${sp.service?.id}-${sp.service?.name}`,
+        sp.service,
+      ])
+    ).values(),
+  ];
 
   return (
     <dialog id="booking_modal" className="modal">
@@ -72,9 +90,9 @@ export default function BookingModal({
           }}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Left Column */}
+            {/* LEFT */}
             <div className="space-y-4">
-              {/* Name */}
+              {/* Nama */}
               <div className="form-control">
                 <label className="label">
                   <span className="label-text font-medium text-gray-700">
@@ -89,7 +107,7 @@ export default function BookingModal({
                 />
               </div>
 
-              {/* Phone */}
+              {/* Nomor HP */}
               <div className="form-control">
                 <label className="label">
                   <span className="label-text font-medium text-gray-700">
@@ -104,7 +122,7 @@ export default function BookingModal({
                 />
               </div>
 
-              {/* License Plate */}
+              {/* Plat Nomor */}
               <div className="form-control">
                 <label className="label">
                   <span className="label-text font-medium text-gray-700">
@@ -123,9 +141,9 @@ export default function BookingModal({
               </div>
             </div>
 
-            {/* Right Column */}
+            {/* RIGHT */}
             <div className="space-y-4">
-              {/* Service Select */}
+              {/* Pilih Layanan */}
               <div className="form-control">
                 <label className="label">
                   <span className="label-text font-medium text-gray-700">
@@ -133,24 +151,62 @@ export default function BookingModal({
                   </span>
                 </label>
                 <select
-                  name="servicePriceId"
-                  value={formData.servicePriceId || ""}
-                  onChange={handleChange}
-                  required
                   className="select select-bordered w-full bg-gray-50"
+                  value={selectedService}
+                  onChange={(e) => {
+                    setSelectedService(e.target.value);
+                    setFormData((prev) => ({
+                      ...prev,
+                      servicePriceId: "",
+                    }));
+                  }}
+                  required
                 >
                   <option value="" disabled>
-                    Pilih layanan servis
+                    Pilih layanan
                   </option>
-                  {servicePrices.map((service) => (
+                  {uniqueServices.map((service) => (
                     <option key={service.id} value={service.id}>
-                      {service.car_type} - {formatPrice(service.price)}
+                      {service.name}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Booking Date */}
+              {/* Pilih Tipe + Harga */}
+              {selectedService && (
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text font-medium text-gray-700">
+                      Pilih Tipe Mobil & Harga
+                    </span>
+                  </label>
+                  <select
+                    className="select select-bordered w-full bg-gray-50"
+                    value={formData.servicePriceId || ""}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        servicePriceId: e.target.value,
+                      }))
+                    }
+                    required
+                  >
+                    <option value="" disabled>
+                      Pilih tipe mobil & harga
+                    </option>
+                    {servicePrices
+                      .filter((sp) => sp.service?.name === selectedService)
+                      .map((sp) => (
+                        <option key={sp.id} value={sp.id}>
+                          {sp.car_type} - {formatPrice(sp.price)}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Tanggal Booking */}
               <div className="form-control">
                 <label className="label">
                   <span className="label-text font-medium text-gray-700">
@@ -167,7 +223,7 @@ export default function BookingModal({
                 />
               </div>
 
-              {/* Booking Time */}
+              {/* Waktu Booking */}
               <div className="form-control">
                 <label className="label ">
                   <span className="label-text font-medium text-gray-700">

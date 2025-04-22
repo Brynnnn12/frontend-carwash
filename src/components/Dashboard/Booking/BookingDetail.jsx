@@ -1,7 +1,14 @@
 import { useEffect } from "react";
 import { FiX } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
+import { updateBookingStatus } from "../../../app/features/bookingSlice";
 
 export default function BookingDetail({ booking, onClose }) {
+  const dispatch = useDispatch();
+  const profile = useSelector((state) => state.profile.data);
+  const role = profile?.user?.role?.name;
+  const isAdmin = role === "admin"; // Sesuaikan dengan nama role admin di sistem Anda
+
   useEffect(() => {
     if (booking) {
       document.getElementById("detail_modal")?.showModal();
@@ -9,6 +16,15 @@ export default function BookingDetail({ booking, onClose }) {
       document.getElementById("detail_modal")?.close();
     }
   }, [booking]);
+
+  const handleStatusChange = async (newStatus) => {
+    const current = booking.status;
+    if (["completed", "canceled"].includes(current)) return; // cegah update status
+    if (newStatus === current) return; // hindari request jika tidak ada perubahan
+
+    await dispatch(updateBookingStatus({ id: booking.id, status: newStatus }));
+    onClose();
+  };
 
   if (!booking) return null;
 
@@ -48,29 +64,41 @@ export default function BookingDetail({ booking, onClose }) {
           <div className="flex flex-wrap gap-4">
             <div className="flex-1 min-w-[200px]">
               <h4 className="font-semibold text-gray-500">Status</h4>
-              <span
-                className={`badge ${
-                  booking.status === "confirmed"
-                    ? "badge-success"
-                    : booking.status === "pending"
-                    ? "badge-warning"
-                    : "badge-error"
-                }`}
-              >
-                {booking.status}
-              </span>
+              <div className="flex items-center gap-2">
+                <span
+                  className={`badge ${
+                    booking.status === "confirmed"
+                      ? "badge-success"
+                      : booking.status === "pending"
+                      ? "badge-warning"
+                      : "badge-error"
+                  }`}
+                >
+                  {booking.status}
+                </span>
+                {isAdmin && (
+                  <select
+                    className="select select-bordered select-sm"
+                    value={booking.status}
+                    onChange={(e) => handleStatusChange(e.target.value)}
+                    disabled={["completed", "canceled"].includes(
+                      booking.status
+                    )} // ✅ blok jika sudah final
+                  >
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="completed">Completed</option>
+                    <option value="canceled">Cancelled</option>
+                  </select>
+                )}
+              </div>
             </div>
             <div className="flex-1 min-w-[200px]">
-              <h4 className="font-semibold text-gray-500">Dibuat Pada</h4>
-              <p>{new Date(booking.createdAt).toLocaleString()}</p>
+              <h4 className="font-semibold text-gray-500">Alamat</h4>
+              <p className="whitespace-pre-line">
+                {booking.user.profile?.address || "-"}
+              </p>
             </div>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-gray-500">Alamat</h4>
-            <p className="whitespace-pre-line">
-              {booking.user.profile?.address || "-"}
-            </p>
           </div>
         </div>
 

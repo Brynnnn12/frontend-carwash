@@ -12,7 +12,7 @@ export default function PriceTable({ onEdit, onCreate }) {
   );
 
   useEffect(() => {
-    dispatch(getServicePrices({ page: 1, limit: 10 }));
+    dispatch(getServicePrices());
   }, [dispatch]);
 
   return (

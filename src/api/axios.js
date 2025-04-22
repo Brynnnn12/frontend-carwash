@@ -24,8 +24,11 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response.status === 401) {
-      // Handle unauthorized (misalnya logout user)
+    // Kirim pesan error agar middleware bisa tangkap
+    if (error.response?.status === 401) {
+      const customError = new Error("Token tidak valid atau sudah kedaluwarsa");
+      customError.response = error.response;
+      return Promise.reject(customError);
     }
     return Promise.reject(error);
   }

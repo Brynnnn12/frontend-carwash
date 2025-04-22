@@ -1,15 +1,33 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "../../api/axios";
 import toast from "react-hot-toast";
+import { buildQueryString } from "../../utils/queryString";
 
 // Async thunks testimonial crud
+// export const fetchTestimonials = createAsyncThunk(
+//   "testimonials/fetchTestimonials",
+//   async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
+//     try {
+//       const response = await axiosInstance.get(
+//         `/testimonials?page=${page}&limit=${limit}`
+//       );
+
+//       return {
+//         data: response.data.data,
+//         pagination: response.data.pagination,
+//       };
+//     } catch (error) {
+//       return rejectWithValue(error.response.data);
+//     }
+//   }
+// );
 export const fetchTestimonials = createAsyncThunk(
   "testimonials/fetchTestimonials",
-  async ({ page = 1, limit = 10 }, { rejectWithValue }) => {
+  async (params = {}, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(
-        `/testimonials?page=${page}&limit=${limit}`
-      );
+      const queryString = buildQueryString(params, { page: 1, limit: 10 });
+
+      const response = await axiosInstance.get(`/testimonials${queryString}`);
 
       return {
         data: response.data.data,

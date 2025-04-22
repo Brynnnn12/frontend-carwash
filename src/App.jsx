@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import DashboardRoutes from "./routes/DashboardRoutes";
 import MainRoutes from "./routes/MainRoutes";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { initializeAuth } from "./app/features/authSlice";
 import ProtectedRoute from "./components/Protected/Route";
@@ -11,11 +11,17 @@ import { fetchProfile } from "./app/features/profileSlice";
 
 const AuthInitializer = ({ children }) => {
   const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(initializeAuth());
-    dispatch(fetchProfile());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchProfile());
+    }
+  }, [dispatch, isAuthenticated]);
 
   return children;
 };

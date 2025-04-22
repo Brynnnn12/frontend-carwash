@@ -1,19 +1,33 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchServices,
   deleteService,
   resetServiceState,
 } from "../../../app/features/serviceSlice";
+import { FaDragon, FaEye } from "react-icons/fa";
 
 export default function ServiceTable({ onEdit, onCreate }) {
   const dispatch = useDispatch();
-  const { services, loading, error } = useSelector((state) => state.services);
+  const { services, loading, error, pagination } = useSelector(
+    (state) => state.services
+  );
+
+  const [page, setPage] = useState(1);
+  const limit = 10;
 
   useEffect(() => {
-    dispatch(fetchServices({}));
+    dispatch(fetchServices({ page, limit }));
     return () => dispatch(resetServiceState());
-  }, [dispatch]);
+  }, [dispatch, page]);
+
+  const handleNext = () => {
+    if (page < pagination.totalPages) setPage((prev) => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (page > 1) setPage((prev) => prev - 1);
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -41,25 +55,46 @@ export default function ServiceTable({ onEdit, onCreate }) {
             <tr key={service.id}>
               <td>{service.name}</td>
               <td>Rp {service.price.toLocaleString()}</td>
-              <td>{service.duration}</td>
+              <td>{service.description}</td>
               <td>
                 <button
                   onClick={() => onEdit(service)}
                   className="btn btn-sm btn-info mr-2"
                 >
-                  Edit
+                  <FaEye />
                 </button>
                 <button
                   onClick={() => dispatch(deleteService(service.id))}
                   className="btn btn-sm btn-error"
                 >
-                  Hapus
+                  <FaDragon />
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      {/* Pagination */}
+      <div className="mt-4 flex justify-center items-center gap-4">
+        <button
+          onClick={handlePrev}
+          disabled={page === 1}
+          className="btn btn-sm"
+        >
+          « Prev
+        </button>
+        <span>
+          Page {pagination.currentPage} of {pagination.totalPages}
+        </span>
+        <button
+          onClick={handleNext}
+          disabled={page === pagination.totalPages}
+          className="btn btn-sm"
+        >
+          Next »
+        </button>
+      </div>
     </div>
   );
 }

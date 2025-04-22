@@ -20,8 +20,10 @@ export default function PriceModal({ isOpen, onClose, editData }) {
   });
 
   useEffect(() => {
-    dispatch(fetchServices()); // Fetch all services when modal opens
-  }, [dispatch]);
+    if (isOpen) {
+      dispatch(fetchServices()); // Fetch services hanya ketika modal dibuka
+    }
+  }, [dispatch, isOpen]); // Tambahkan isOpen sebagai dependency
 
   useEffect(() => {
     if (editData) {

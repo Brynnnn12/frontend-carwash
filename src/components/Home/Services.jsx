@@ -153,7 +153,7 @@ const CarWashServices = () => {
   const { services, loading, error } = useSelector((state) => state.services);
 
   useEffect(() => {
-    dispatch(fetchServices({ page: 1, limit: 3 }));
+    dispatch(fetchServices());
   }, [dispatch]);
 
   const containerVariants = {

@@ -6,6 +6,8 @@ import {
   fetchTestimonials,
 } from "../../app/features/testimonialSlice";
 
+import { FaUserCircle } from "react-icons/fa";
+
 const TestimonialPage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [itemsPerSlide, setItemsPerSlide] = useState(1);
@@ -103,11 +105,16 @@ const TestimonialPage = () => {
       className="bg-white rounded-3xl shadow-lg p-6 transition hover:shadow-xl"
     >
       <div className="flex items-center gap-4 mb-4">
-        <img
-          src={testimonial.user?.profile?.avatar || "/default-avatar.png"}
-          alt={testimonial.user?.username}
-          className="w-14 h-14 rounded-full object-cover"
-        />
+        {testimonial.user?.profile?.avatar ? (
+          <img
+            src={testimonial.user.profile.avatar}
+            alt={testimonial.user?.username}
+            className="w-14 h-14 rounded-full object-cover"
+          />
+        ) : (
+          <FaUserCircle className="w-14 h-14 text-gray-400" />
+        )}
+
         <div>
           <h3 className="text-md font-semibold text-neutral-900">
             {testimonial.user?.username}

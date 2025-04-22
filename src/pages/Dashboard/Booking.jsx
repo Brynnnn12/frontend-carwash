@@ -13,6 +13,7 @@ import { getServicePrices } from "../../app/features/servicePrice";
 import BookingTable from "../../components/Dashboard/Booking/BookingTable";
 import BookingModal from "../../components/Dashboard/Booking/BookingModal";
 import BookingDetail from "../../components/Dashboard/Booking/BookingDetail";
+import toast from "react-hot-toast";
 
 const defaultFormData = {
   servicePriceId: "",
@@ -41,6 +42,10 @@ export default function Bookings() {
 
   // 🔹 Modal Handlers
   const handleOpenCreate = () => {
+    if (!profile?.name || !profile?.phoneNumber || !profile?.address) {
+      toast.error("Lengkapi data diri terlebih dahulu");
+      return;
+    }
     setFormData(defaultFormData);
     setIsEditMode(false);
     dispatch(getServicePrices({ page: 1, limit: 100 }));
@@ -84,8 +89,11 @@ export default function Bookings() {
   };
 
   const handleSubmit = () => {
+    if (!profile?.name || !profile?.phoneNumber || !profile?.address) {
+      toast.error("Lengkapi data diri terlebih dahulu");
+      return;
+    }
     const bookingData = {
-      userId: profile?.userId,
       servicePriceId: formData.servicePriceId,
       bookingDate: formData.bookingDate,
       bookingTime: formData.bookingTime,
@@ -101,7 +109,7 @@ export default function Bookings() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-sm p-4 md:p-6">
+    <div className="w-full bg-white rounded-lg shadow-sm p-4 md:p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
         <h2 className="text-2xl font-bold text-gray-800">Manajemen Booking</h2>
         <button
