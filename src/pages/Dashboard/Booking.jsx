@@ -48,7 +48,7 @@ export default function Bookings() {
     }
     setFormData(defaultFormData);
     setIsEditMode(false);
-    dispatch(getServicePrices({ page: 1, limit: 100 }));
+    dispatch(getServicePrices());
     setIsModalOpen(true);
   };
 
@@ -62,7 +62,7 @@ export default function Bookings() {
       status: booking.status || "pending",
     });
     setIsEditMode(true);
-    dispatch(getServicePrices({ page: 1, limit: 100 }));
+    dispatch(getServicePrices());
     setIsModalOpen(true);
   };
 

@@ -12,7 +12,7 @@ export default function TestimonialTable({ testimonials, onEdit, loading }) {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-gray-100 text-black rounded shadow">
-        <thead className="bg-gray-300 text-black">
+        <thead className="bg-blue-500 text-white">
           <tr>
             <th className="p-3 text-left">No</th>
             <th className="p-3 text-left">User</th>

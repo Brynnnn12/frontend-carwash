@@ -38,10 +38,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
         } lg:translate-x-0 lg:static lg:inset-auto`}
       >
         <div className="flex items-center justify-center h-16 px-4 border-b border-blue-700">
-          <h1 className="text-xl font-bold">
-            <span className="text-white">Car</span>
-            <span className="text-yellow-300">Wash</span>
-          </h1>
+          <Link to="/" onClick={() => setSidebarOpen(false)}>
+            <h1 className="text-xl font-bold">
+              <span className="text-white">Car</span>
+              <span className="text-yellow-300">Wash</span>
+            </h1>
+          </Link>
         </div>
 
         <nav className="mt-6 ">

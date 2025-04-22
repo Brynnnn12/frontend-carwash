@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -76,7 +77,7 @@ export default function Testimonials() {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">Testimoni</h2>
+        <h2 className="text-2xl font-bold text-gray-700">Testimoni</h2>
         <button className="btn btn-primary" onClick={handleOpenCreate}>
           Tambah Testimoni
         </button>

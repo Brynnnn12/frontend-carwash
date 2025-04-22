@@ -1,18 +1,21 @@
+// components/transactions/TransactionModal.jsx
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   createTransaction,
   updateTransaction,
 } from "../../../app/features/transactionSlice";
-import { useDispatch, useSelector } from "react-redux";
 import { getUserBookings } from "../../../app/features/bookingSlice";
+import TransactionForm from "./TransactionForm";
 
 export default function TransactionModal({ isOpen, onClose, editData }) {
   const dispatch = useDispatch();
-
-  const [bookingId, setBookingId] = useState("");
-  const [paymentProof, setPaymentProof] = useState(null);
-
   const { bookings } = useSelector((state) => state.bookings);
+
+  const [initialValues, setInitialValues] = useState({
+    bookingId: "",
+    paymentProof: null,
+  });
 
   useEffect(() => {
     dispatch(getUserBookings());
@@ -20,19 +23,23 @@ export default function TransactionModal({ isOpen, onClose, editData }) {
 
   useEffect(() => {
     if (editData) {
-      setBookingId(editData.bookingId);
+      setInitialValues({
+        bookingId: editData.bookingId,
+        paymentProof: null,
+      });
     } else {
-      setBookingId("");
-      setPaymentProof(null);
+      setInitialValues({
+        bookingId: "",
+        paymentProof: null,
+      });
     }
   }, [editData]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = (values) => {
     const formData = new FormData();
-    formData.append("bookingId", bookingId);
-    if (paymentProof) {
-      formData.append("paymentProof", paymentProof);
+    formData.append("bookingId", values.bookingId);
+    if (values.paymentProof) {
+      formData.append("paymentProof", values.paymentProof);
     }
 
     if (editData) {
@@ -52,43 +59,13 @@ export default function TransactionModal({ isOpen, onClose, editData }) {
         <h3 className="font-bold text-lg mb-4">
           {editData ? "Edit Transaksi" : "Tambah Transaksi"}
         </h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="label">Pilih Booking</label>
-            <select
-              className="select select-bordered w-full"
-              value={bookingId}
-              onChange={(e) => setBookingId(e.target.value)}
-              required
-              disabled={!!editData}
-            >
-              <option value="">-- Pilih Booking --</option>
-              {bookings.map((booking) => (
-                <option key={booking.id} value={booking.id}>
-                  {booking.id} - {booking.user?.name} -{" "}
-                  {booking.servicePrice?.service?.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="label">Bukti Pembayaran</label>
-            <input
-              type="file"
-              className="file-input file-input-bordered w-full"
-              onChange={(e) => setPaymentProof(e.target.files[0])}
-              accept="image/*"
-            />
-          </div>
-          <div className="modal-action">
-            <button type="button" className="btn" onClick={onClose}>
-              Batal
-            </button>
-            <button type="submit" className="btn btn-primary">
-              Simpan
-            </button>
-          </div>
-        </form>
+        <TransactionForm
+          initialValues={initialValues}
+          onSubmit={handleSubmit}
+          bookings={bookings}
+          isEdit={!!editData}
+          onClose={onClose}
+        />
       </div>
     </div>
   );

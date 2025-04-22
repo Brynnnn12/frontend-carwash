@@ -4,6 +4,7 @@ import {
   getServicePrices,
   deleteServicePrice,
 } from "../../../app/features/servicePrice";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
 
 export default function PriceTable({ onEdit, onCreate }) {
   const dispatch = useDispatch();
@@ -16,7 +17,7 @@ export default function PriceTable({ onEdit, onCreate }) {
   }, [dispatch]);
 
   return (
-    <div className="overflow-x-auto">
+    <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl text-gray-700 font-bold">
           Daftar Harga Layanan
@@ -31,9 +32,9 @@ export default function PriceTable({ onEdit, onCreate }) {
         <p className="text-red-500">{error.message || "Terjadi kesalahan."}</p>
       )}
 
-      <table className="table bg-gray-100 w-full text-gray-700">
-        <thead>
-          <tr className="text-gray-700">
+      <table className="table overflow-x-auto w-full text-gray-700">
+        <thead className="bg-blue-500 text-white">
+          <tr>
             <th>No</th>
             <th>Nama Layanan</th>
             <th>Tipe Mobil</th>
@@ -53,13 +54,13 @@ export default function PriceTable({ onEdit, onCreate }) {
                   onClick={() => onEdit(price)}
                   className="btn btn-sm btn-info mr-2"
                 >
-                  Edit
+                  <FiEdit />
                 </button>
                 <button
                   onClick={() => dispatch(deleteServicePrice(price.id))}
                   className="btn btn-sm btn-error"
                 >
-                  Hapus
+                  <FiTrash2 />
                 </button>
               </td>
             </tr>

@@ -5,7 +5,8 @@ import {
   deleteService,
   resetServiceState,
 } from "../../../app/features/serviceSlice";
-import { FaDragon, FaEye } from "react-icons/fa";
+
+import { FiEdit, FiTrash } from "react-icons/fi";
 
 export default function ServiceTable({ onEdit, onCreate }) {
   const dispatch = useDispatch();
@@ -30,7 +31,7 @@ export default function ServiceTable({ onEdit, onCreate }) {
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl text-gray-700 font-bold">Daftar Layanan</h2>
         <button onClick={onCreate} className="btn btn-primary">
@@ -41,33 +42,33 @@ export default function ServiceTable({ onEdit, onCreate }) {
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      <table className="table bg-gray-100 w-full text-gray-700">
-        <thead>
-          <tr className="text-gray-700">
+      <table className="table overflow-x-auto w-full text-gray-700">
+        <thead className="bg-blue-500 text-white">
+          <tr className="">
+            <th>No</th>
             <th>Nama</th>
             <th>Harga</th>
-            <th>Durasi</th>
             <th>Aksi</th>
           </tr>
         </thead>
         <tbody>
-          {services.map((service) => (
+          {services.map((service, index) => (
             <tr key={service.id}>
+              <td>{index + 1}</td>
               <td>{service.name}</td>
               <td>Rp {service.price.toLocaleString()}</td>
-              <td>{service.description}</td>
-              <td>
+              <td className="flex">
                 <button
                   onClick={() => onEdit(service)}
                   className="btn btn-sm btn-info mr-2"
                 >
-                  <FaEye />
+                  <FiEdit />
                 </button>
                 <button
                   onClick={() => dispatch(deleteService(service.id))}
                   className="btn btn-sm btn-error"
                 >
-                  <FaDragon />
+                  <FiTrash />
                 </button>
               </td>
             </tr>

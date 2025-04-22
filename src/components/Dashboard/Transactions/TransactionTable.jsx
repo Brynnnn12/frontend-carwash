@@ -5,7 +5,13 @@ import {
   deleteTransaction,
   updatePaymentStatus,
 } from "../../../app/features/transactionSlice";
-import { FaEdit, FaTrash, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import {
+  FaEdit,
+  FaTrash,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaEye,
+} from "react-icons/fa";
 import toast from "react-hot-toast";
 
 export default function TransactionTable({ onEdit }) {
@@ -35,18 +41,18 @@ export default function TransactionTable({ onEdit }) {
   };
 
   return (
-    <div className="card bg-base-100 shadow-xl p-4">
-      <div className="flex justify-between items-center mb-4">
+    <div className="card  shadow-xl p-4">
+      <div className="flex text-gray-700 justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Daftar Transaksi</h2>
       </div>
 
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="table">
+        <div className="overflow-x-auto ">
+          <table className="table text-black">
             <thead>
-              <tr>
+              <tr className="text-black bg-blue-500 border border-radius">
                 <th>No</th>
                 <th>Booking</th>
                 <th>Total</th>
@@ -76,7 +82,11 @@ export default function TransactionTable({ onEdit }) {
                           tx.paymentProof && handleToggleStatus(tx)
                         }
                       >
-                        {tx.isPaid ? "Sudah Dibayar" : "Belum Dibayar"}
+                        {tx.isPaid ? (
+                          <FaCheckCircle className="" title="Sudah Dibayar" />
+                        ) : (
+                          <FaTimesCircle className="" title="Belum Dibayar" />
+                        )}
                       </span>
                     ) : tx.isPaid ? (
                       <FaCheckCircle
@@ -99,7 +109,7 @@ export default function TransactionTable({ onEdit }) {
                         rel="noopener noreferrer"
                         className="link link-primary"
                       >
-                        Lihat
+                        <FaEye />
                       </a>
                     ) : (
                       "-"

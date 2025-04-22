@@ -138,7 +138,15 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
-import { FaCar, FaCarSide, FaCarAlt, FaShower, FaStar } from "react-icons/fa";
+import {
+  FaCar,
+  FaCarSide,
+  FaCarAlt,
+  FaShower,
+  FaStar,
+  FaTags,
+} from "react-icons/fa";
+
 import { fetchServices } from "../../app/features/serviceSlice";
 
 const iconMap = {
@@ -203,42 +211,56 @@ const CarWashServices = () => {
         className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto"
       >
         {services?.length > 0 &&
-          services.map((service) => (
-            <motion.div
-              key={service.id}
-              variants={itemVariants}
-              whileHover={{ y: -10 }}
-              className="card bg-white shadow-xl hover:shadow-2xl transition-shadow"
-            >
-              <div className="card-body items-center text-center bg-opacity-10 rounded-t-lg">
-                <div className="text-primary mb-4">
-                  {iconMap[service.icon] || <FaCar className="text-4xl" />}
+          services.map((service, index) => {
+            const isMiddleCard =
+              services.length >= 3 && index === Math.floor(services.length / 2);
+
+            return (
+              <motion.div
+                key={service.id}
+                variants={itemVariants}
+                whileHover={{ y: -10 }}
+                className={`card bg-white shadow-xl hover:shadow-2xl transition-shadow relative ${
+                  isMiddleCard ? "border-2 border-primary" : ""
+                }`}
+              >
+                {isMiddleCard && (
+                  <div className="absolute top-0 right-0 m-2 flex items-center gap-1 bg-primary text-white px-2 py-1 rounded-full shadow-lg text-sm">
+                    <FaTags className="text-xs" />
+                    Best Seller
+                  </div>
+                )}
+                <div className="card-body items-center text-center bg-opacity-10 rounded-t-lg">
+                  <div className="text-primary mb-4">
+                    {iconMap[service.icon] || <FaCar className="text-4xl" />}
+                  </div>
+                  <h2 className="card-title text-black text-2xl">
+                    {service.name}
+                  </h2>
+                  <p className="text-gray-700">{service.description}</p>
                 </div>
-                <h2 className="card-title text-black text-2xl">
-                  {service.name}
-                </h2>
-                <p className="text-gray-700">{service.description}</p>
-                <div className="badge badge-lg badge-info mt-2">
-                  {service.price}
+                <div className="card-body pt-0">
+                  <ul className="space-y-2 text-left">
+                    {service.features?.map((feature, idx) => (
+                      <li key={idx} className="flex items-start">
+                        <FaStar className="text-xs mt-1 mr-2 text-primary" />
+                        <span className="text-accent">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="card-actions justify-center mt-6">
+                    <div className="badge badge-lg badge-info mt-2">
+                      {new Intl.NumberFormat("id-ID", {
+                        style: "currency",
+                        currency: "IDR",
+                        minimumFractionDigits: 0,
+                      }).format(service.price)}
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="card-body pt-0">
-                <ul className="space-y-2 text-left">
-                  {service.features?.map((feature, index) => (
-                    <li key={index} className="flex items-start">
-                      <FaStar className="text-xs mt-1 mr-2 text-primary" />
-                      <span className="text-accent">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="card-actions justify-center mt-6">
-                  <button className="btn btn-primary btn-wide">
-                    Pesan Sekarang
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
       </motion.div>
     </div>
   );
