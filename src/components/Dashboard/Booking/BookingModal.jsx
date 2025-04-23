@@ -39,7 +39,6 @@ export default function BookingModal({
       minimumFractionDigits: 0,
     }).format(price);
 
-  // Ambil layanan unik
   const uniqueServices = [
     ...new Map(
       servicePrices.map((sp) => [
@@ -166,8 +165,11 @@ export default function BookingModal({
                     Pilih layanan
                   </option>
                   {uniqueServices.map((service) => (
-                    <option key={service.id} value={service.id}>
-                      {service.name}
+                    <option
+                      key={`${service?.id}-${service?.name}`}
+                      value={service?.id}
+                    >
+                      {service?.name}
                     </option>
                   ))}
                 </select>
@@ -198,7 +200,10 @@ export default function BookingModal({
                     {servicePrices
                       .filter((sp) => sp.service?.name === selectedService)
                       .map((sp) => (
-                        <option key={sp.id} value={sp.id}>
+                        <option
+                          key={`${sp.id}-${sp.car_type}-${sp.price}`}
+                          value={sp.id}
+                        >
                           {sp.car_type} - {formatPrice(sp.price)}
                         </option>
                       ))}

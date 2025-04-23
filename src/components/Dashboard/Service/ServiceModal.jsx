@@ -19,11 +19,14 @@ export default function ServiceModal({ isOpen, onClose, editData }) {
     }
   }, [success, dispatch, onClose]);
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values, { resetForm }) => {
     if (editData) {
-      dispatch(updateService({ id: editData.id, serviceData: values }));
+      await dispatch(updateService({ id: editData.id, serviceData: values }));
     } else {
-      dispatch(createService(values));
+      const result = await dispatch(createService(values));
+      if (createService.fulfilled.match(result)) {
+        resetForm();
+      }
     }
   };
 
@@ -33,7 +36,7 @@ export default function ServiceModal({ isOpen, onClose, editData }) {
       className={`modal ${isOpen ? "modal-open" : ""}`}
     >
       <div className="modal-box bg-white text-gray-800 rounded-xl shadow-lg">
-        <h3 className="font-semibold text-2xl mb-6 text-center">
+        <h3 className="font-bold text-2xl text-primary mb-4">
           {editData ? "Edit Layanan" : "Tambah Layanan"}
         </h3>
 

@@ -129,7 +129,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
               className="flex items-center px-4 py-3 text-white hover:bg-blue-700 rounded-lg transition-colors mt-2"
             >
               <FaUser className="w-5 h-5" />
-              <span className="ml-3">Profiles</span>
+              <span className="ml-3">Profile</span>
             </Link>
 
             <button

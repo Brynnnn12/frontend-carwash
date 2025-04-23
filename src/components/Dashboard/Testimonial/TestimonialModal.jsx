@@ -31,7 +31,7 @@ export default function TestimonialModal({
   return (
     open && (
       <dialog open className="modal modal-open">
-        <div className="modal-box bg-white text-black max-w-md w-full relative">
+        <div className="modal-box bg-white text-black max-w-sm lg:max-w-lg w-full relative">
           <button
             onClick={onClose}
             className="btn btn-sm btn-circle btn-ghost absolute right-4 top-4"

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchTransactions,
@@ -11,6 +11,7 @@ import {
   FaCheckCircle,
   FaTimesCircle,
   FaEye,
+  FaTimes,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 
@@ -19,8 +20,9 @@ export default function TransactionTable({ onEdit }) {
   const profile = useSelector((state) => state.profile.data);
   const role = profile?.user?.role?.name;
   const isAdmin = role === "admin";
-
   const { items, loading } = useSelector((state) => state.transaction);
+
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     dispatch(fetchTransactions({ page: 1, limit: 10 }));
@@ -41,7 +43,7 @@ export default function TransactionTable({ onEdit }) {
   };
 
   return (
-    <div className="card  shadow-xl p-4">
+    <div className="card shadow-xl p-4">
       <div className="flex text-gray-700 justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Daftar Transaksi</h2>
       </div>
@@ -49,7 +51,7 @@ export default function TransactionTable({ onEdit }) {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <div className="overflow-x-auto ">
+        <div className="overflow-x-auto">
           <table className="table text-black">
             <thead>
               <tr className="text-black bg-blue-500 border border-radius">
@@ -67,7 +69,6 @@ export default function TransactionTable({ onEdit }) {
                   <td>{idx + 1}</td>
                   <td>{tx.bookingId}</td>
                   <td>Rp {tx.totalAmount.toLocaleString()}</td>
-
                   <td>
                     {isAdmin ? (
                       <span
@@ -83,9 +84,9 @@ export default function TransactionTable({ onEdit }) {
                         }
                       >
                         {tx.isPaid ? (
-                          <FaCheckCircle className="" title="Sudah Dibayar" />
+                          <FaCheckCircle title="Sudah Dibayar" />
                         ) : (
-                          <FaTimesCircle className="" title="Belum Dibayar" />
+                          <FaTimesCircle title="Belum Dibayar" />
                         )}
                       </span>
                     ) : tx.isPaid ? (
@@ -100,25 +101,25 @@ export default function TransactionTable({ onEdit }) {
                       />
                     )}
                   </td>
-
                   <td>
                     {tx.paymentProof ? (
-                      <a
-                        href={tx.paymentProof}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="link link-primary"
+                      <button
+                        onClick={() => setSelectedImage(tx.paymentProof)}
+                        className="btn btn-sm btn-outline"
                       >
                         <FaEye />
-                      </a>
+                      </button>
                     ) : (
                       "-"
                     )}
                   </td>
                   <td className="flex gap-2">
-                    <button className="btn btn-sm" onClick={() => onEdit(tx)}>
-                      <FaEdit />
-                    </button>
+                    {tx.booking && tx.booking.status !== "canceled" && (
+                      <button className="btn btn-sm" onClick={() => onEdit(tx)}>
+                        <FaEdit />
+                      </button>
+                    )}
+
                     <button
                       className="btn btn-sm btn-error"
                       onClick={() => handleDelete(tx.id)}
@@ -131,6 +132,28 @@ export default function TransactionTable({ onEdit }) {
             </tbody>
           </table>
         </div>
+      )}
+
+      {/* Modal Preview Gambar */}
+      {selectedImage && (
+        <dialog id="image_modal" className="modal modal-open">
+          <div className="modal-box max-w-md p-4">
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="font-bold text-lg">Bukti Pembayaran</h3>
+              <button
+                className="btn btn-sm btn-circle btn-ghost"
+                onClick={() => setSelectedImage(null)}
+              >
+                <FaTimes />
+              </button>
+            </div>
+            <img
+              src={selectedImage}
+              alt="Bukti Pembayaran"
+              className="w-full max-h-80 object-fit rounded border"
+            />
+          </div>
+        </dialog>
       )}
     </div>
   );

@@ -6,7 +6,9 @@ export default function ServiceForm({ initialValues, onSubmit, loading }) {
     <Formik
       initialValues={initialValues}
       validationSchema={ServiceSchema} // ✅ Pakai schema dari file terpisah
-      onSubmit={onSubmit}
+      onSubmit={(values, actions) => {
+        onSubmit(values, actions);
+      }}
       enableReinitialize
     >
       <Form className="space-y-4">

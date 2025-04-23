@@ -24,16 +24,19 @@ export default function PriceModal({ isOpen, onClose, editData }) {
     price: editData?.price || "",
   };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, { resetForm }) => {
     if (editData) {
       await dispatch(
         updateServicePrice({ id: editData.id, servicePriceData: values })
       );
     } else {
-      await dispatch(createServicePrice(values));
+      const result = await dispatch(createServicePrice(values));
+      if (createServicePrice.fulfilled.match(result)) {
+        resetForm(); // Reset form hanya kalau sukses
+      }
     }
 
-    dispatch(getServicePrices({ page: 1, limit: 10 }));
+    await dispatch(getServicePrices());
     onClose();
     dispatch(clearCurrentServicePrice());
   };

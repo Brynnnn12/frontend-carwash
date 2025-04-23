@@ -85,18 +85,26 @@ export default function BookingTable({
                     >
                       <FiEye />
                     </button>
-                    <button
-                      onClick={() => onEdit?.(booking)}
-                      className="btn btn-sm btn-warning text-white"
-                    >
-                      <FiEdit />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteClick(booking)}
-                      className="btn btn-sm btn-error text-white"
-                    >
-                      <FiTrash2 />
-                    </button>
+                    {!["confirmed", "completed", "canceled"].includes(
+                      booking.status
+                    ) && (
+                      <button
+                        onClick={() => onEdit?.(booking)}
+                        className="btn btn-sm btn-warning text-white"
+                      >
+                        <FiEdit />
+                      </button>
+                    )}
+
+                    {/* Tampilkan tombol Delete hanya jika status-nya bukan confirmed */}
+                    {booking.status !== "confirmed" && (
+                      <button
+                        onClick={() => handleDeleteClick(booking)}
+                        className="btn btn-sm btn-error text-white"
+                      >
+                        <FiTrash2 />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))

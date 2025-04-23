@@ -7,6 +7,7 @@ import {
 } from "../../app/features/testimonialSlice";
 
 import { FaUserCircle } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const TestimonialPage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -231,12 +232,12 @@ const TestimonialPage = () => {
       )}
 
       <div className="mt-10 flex justify-center">
-        <a
-          href="/testimoni"
+        <Link
+          to="/testimonials"
           className="inline-block bg-primary hover:bg-primary-focus text-white font-semibold py-3 px-8 rounded-full shadow-lg transition duration-300 transform hover:scale-105"
         >
           Lihat Semua Testimoni
-        </a>
+        </Link>
       </div>
     </div>
   );

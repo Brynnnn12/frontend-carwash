@@ -9,9 +9,10 @@ export const fetchProfile = createAsyncThunk(
       const res = await axiosInstance.get("/profile");
       return res.data.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data || { message: "Fetch failed" }
-      );
+      return rejectWithValue({
+        status: error.response?.status,
+        message: error.response?.data?.message || "Fetch failed",
+      });
     }
   }
 );
@@ -28,9 +29,10 @@ export const createProfile = createAsyncThunk(
       });
       return res.data.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data || { message: "Create failed" }
-      );
+      return rejectWithValue({
+        status: error.response?.status,
+        message: error.response?.data?.message || "Create failed",
+      });
     }
   }
 );
@@ -47,9 +49,10 @@ export const updateProfile = createAsyncThunk(
       });
       return res.data.data;
     } catch (error) {
-      return rejectWithValue(
-        error.response?.data || { message: "Update failed" }
-      );
+      return rejectWithValue({
+        status: error.response?.status,
+        message: error.response?.data?.message || "Update failed",
+      });
     }
   }
 );

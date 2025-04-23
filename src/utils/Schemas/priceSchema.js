@@ -6,5 +6,8 @@ export const PriceSchema = Yup.object().shape({
   price: Yup.number()
     .typeError("Harga harus berupa angka")
     .positive("Harga harus lebih dari 0")
+    .min(20000, "Harga Minimal 20000")
+    .max(100000, "Harga Max 100000")
+    .integer("Harga tidak boleh desimal")
     .required("Harga wajib diisi"),
 });

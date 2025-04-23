@@ -37,7 +37,7 @@ const About = () => {
           <Motion.div variants={itemVariants} className="lg:w-1/2 w-full">
             <div className="overflow-hidden rounded-2xl shadow-md">
               <img
-                src="image/carwash.jpg"
+                src="image/carwash5.jpg"
                 alt="Carwash"
                 className="w-full h-80 object-cover"
               />

@@ -11,9 +11,11 @@ export default function ServicePriceForm({
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={PriceSchema}
-      onSubmit={onSubmit}
       enableReinitialize
+      onSubmit={(values, actions) => {
+        onSubmit(values, actions);
+      }}
+      validationSchema={PriceSchema}
     >
       <Form className="space-y-4">
         {/* Layanan */}
