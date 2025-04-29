@@ -186,7 +186,7 @@ const TestimonialPage = () => {
 
   return (
     <div
-      id="testimonial"
+      id="testimoni"
       className="bg-gradient-to-br from-neutral-100 to-neutral-200 py-16 px-6"
     >
       <motion.div

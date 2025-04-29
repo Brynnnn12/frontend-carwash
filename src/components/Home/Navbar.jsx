@@ -99,7 +99,7 @@ const Navbar = () => {
             </li>
             <li>
               <button
-                onClick={() => scrollToSection("testimonial")}
+                onClick={() => scrollToSection("testimoni")}
                 className="font-medium text-white hover:text-yellow-300"
               >
                 Testimonial
@@ -165,7 +165,7 @@ const Navbar = () => {
                 onClick={() =>
                   document.getElementById("register_modal").showModal()
                 }
-                className="btn bg-yellow-400 hover:bg-yellow-500 text-blue-800 border-none"
+                className="btn bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-semibold border-none shadow-md"
               >
                 Register
               </button>
@@ -219,7 +219,7 @@ const Navbar = () => {
                 Services
               </button>
               <button
-                onClick={() => scrollToSection("testimonial")}
+                onClick={() => scrollToSection("testimoni")}
                 className="text-lg font-medium text-white hover:text-yellow-300 text-left"
               >
                 Testimonial

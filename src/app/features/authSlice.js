@@ -1,9 +1,8 @@
 // src/features/auth/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance from "../../api/axios"; // Gunakan axios instance custom
+import axiosInstance from "../../api/axios";
 import toast from "react-hot-toast";
 
-// Async Thunks menggunakan axiosInstance
 export const registerUser = createAsyncThunk(
   "auth/register",
   async (userData, { rejectWithValue }) => {
@@ -52,26 +51,27 @@ export const logoutUser = createAsyncThunk(
   }
 );
 
-// Slice
+export const initializeAuth = createAsyncThunk(
+  "auth/initialize",
+  async (_, thunkAPI) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      return { token };
+    }
+    return thunkAPI.rejectWithValue();
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState: {
     token: null,
+    isAuthenticated: false,
+    loading: true,
     status: "idle",
     error: null,
-    isAuthenticated: false,
   },
   reducers: {
-    // Sync reducers untuk inisialisasi state dari localStorage
-    initializeAuth(state) {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        state.token = token;
-        state.isAuthenticated = true;
-      }
-    },
-    // Clear error message
     clearError(state) {
       state.error = null;
     },
@@ -81,41 +81,49 @@ const authSlice = createSlice({
       // Register
       .addCase(registerUser.pending, (state) => {
         state.status = "loading";
+        state.loading = true;
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.loading = false;
         state.token = action.payload.token;
         state.isAuthenticated = true;
         localStorage.setItem("token", action.payload.token);
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = "failed";
+        state.loading = false;
         state.error = action.payload?.message || "Registration failed";
       })
 
       // Login
       .addCase(loginUser.pending, (state) => {
         state.status = "loading";
+        state.loading = true;
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
+        state.loading = false;
         state.token = action.payload.token;
         state.isAuthenticated = true;
         localStorage.setItem("token", action.payload.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
+        state.loading = false;
         state.error = action.payload?.message || "Login failed";
       })
 
       // Logout
       .addCase(logoutUser.pending, (state) => {
         state.status = "loading";
+        state.loading = true;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.status = "idle";
+        state.loading = false;
         state.token = null;
         state.isAuthenticated = false;
         state.error = null;
@@ -123,10 +131,26 @@ const authSlice = createSlice({
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.status = "failed";
+        state.loading = false;
         state.error = action.payload?.message || "Logout failed";
+      })
+
+      // Initialize
+      .addCase(initializeAuth.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(initializeAuth.fulfilled, (state, action) => {
+        state.loading = false;
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+      })
+      .addCase(initializeAuth.rejected, (state) => {
+        state.loading = false;
+        state.token = null;
+        state.isAuthenticated = false;
       });
   },
 });
 
-export const { initializeAuth, clearError } = authSlice.actions;
+export const { clearError } = authSlice.actions;
 export default authSlice.reducer;

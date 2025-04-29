@@ -54,7 +54,7 @@ export default function TransactionTable({ onEdit }) {
         <div className="overflow-x-auto">
           <table className="table text-black">
             <thead>
-              <tr className="text-black bg-blue-500 border border-radius">
+              <tr className="text-black bg-blue-500 ">
                 <th>No</th>
                 <th>Booking</th>
                 <th>Total</th>
@@ -114,7 +114,7 @@ export default function TransactionTable({ onEdit }) {
                     )}
                   </td>
                   <td className="flex gap-2">
-                    {tx.booking && tx.booking.status !== "canceled" && (
+                    {tx.booking && tx.booking.status === "confirmed" && (
                       <button className="btn btn-sm" onClick={() => onEdit(tx)}>
                         <FaEdit />
                       </button>

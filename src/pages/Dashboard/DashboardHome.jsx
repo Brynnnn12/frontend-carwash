@@ -14,7 +14,7 @@ const DashboardHome = () => {
 
   useEffect(() => {
     dispatch(getUserBookings());
-    dispatch(fetchTransactions({ page: 1, limit: 10 }));
+    dispatch(fetchTransactions());
   }, [dispatch]);
 
   return (

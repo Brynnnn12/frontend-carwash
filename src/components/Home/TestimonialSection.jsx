@@ -12,7 +12,7 @@ const TestimonialSection = () => {
   );
 
   const [page, setPage] = useState(1);
-  const [limit] = useState(6);
+  const [limit] = useState(10);
   const [liked, setLiked] = useState({});
 
   useEffect(() => {

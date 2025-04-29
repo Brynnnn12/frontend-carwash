@@ -8,6 +8,8 @@ import ProtectedRoute from "./components/Protected/Route";
 import Error from "./pages/Error/Error";
 import { Toaster } from "react-hot-toast";
 import { fetchProfile } from "./app/features/profileSlice";
+import Page from "./pages/Home/Page";
+import Testimonials from "./pages/Home/Testimonials";
 
 const AuthInitializer = ({ children }) => {
   const dispatch = useDispatch();
@@ -34,11 +36,12 @@ function App() {
 
       <Routes>
         {/* Main Routes (Public) */}
-        {MainRoutes}
+        {/* {MainRoutes} */}
+        <Route path="/" element={<Page />} />
+        <Route path="/testimonials" element={<Testimonials />} />
 
         {/* Dashboard Routes (Protected) */}
-        <Route element={<ProtectedRoute />}>{DashboardRoutes}</Route>
-
+        {DashboardRoutes}
         {/* 404 Not Found */}
         <Route path="*" element={<Error />} />
       </Routes>

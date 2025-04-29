@@ -11,7 +11,7 @@ export default function TestimonialTable({ testimonials, onEdit, loading }) {
 
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full bg-gray-100 text-black rounded shadow">
+      <table className="min-w-full bg-gray-100 text-xs md:text-sm text-black rounded shadow">
         <thead className="bg-blue-500 text-white">
           <tr>
             <th className="p-3 text-left">No</th>
@@ -19,20 +19,19 @@ export default function TestimonialTable({ testimonials, onEdit, loading }) {
             <th className="p-3 text-left">Email</th>
             <th className="p-3 text-left">Rating</th>
             <th className="p-3 text-left">Comment</th>
-            <th className="p-3 text-left">Avatar</th>
             <th className="p-3 text-left">Aksi</th>
           </tr>
         </thead>
         <tbody>
           {loading ? (
             <tr>
-              <td colSpan="7" className="text-center py-6">
+              <td colSpan="6" className="text-center py-6">
                 Loading...
               </td>
             </tr>
           ) : testimonials.length === 0 ? (
             <tr>
-              <td colSpan="7" className="text-center py-6">
+              <td colSpan="6" className="text-center py-6">
                 Tidak ada data.
               </td>
             </tr>
@@ -47,28 +46,22 @@ export default function TestimonialTable({ testimonials, onEdit, loading }) {
                 <td className="p-2">{t.user?.email}</td>
                 <td className="p-2">{t.rating}</td>
                 <td className="p-2">{t.comment}</td>
-                <td className="p-2">
-                  <img
-                    src={t.user?.profile?.avatar}
-                    alt="avatar"
-                    className="w-10 h-10 rounded-full object-cover"
-                  />
-                </td>
+
                 <td className="p-2">
                   <div className="flex gap-3">
                     <button
                       onClick={() => onEdit(t)}
-                      className="text-blue-600 hover:text-blue-800"
+                      className="btn btn-sm btn-primary text-white"
                       title="Edit"
                     >
-                      <FaEdit size={18} />
+                      <FaEdit />
                     </button>
                     <button
                       onClick={() => handleDelete(t.id)}
-                      className="text-red-600 hover:text-red-800"
+                      className="btn btn-sm btn-error "
                       title="Hapus"
                     >
-                      <FaTrash size={18} />
+                      <FaTrash />
                     </button>
                   </div>
                 </td>
